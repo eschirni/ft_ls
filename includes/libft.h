@@ -4,6 +4,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <stdbool.h>
 
 typedef struct s_list
 {
@@ -55,6 +56,6 @@ char	*ft_substr(const char *s, unsigned int start, size_t len);
 int		ft_tolower(int c);
 int		ft_toupper(int c);
 char	*ft_straddcharonce(char *s1, const char c);
-void	errorexit(const char *s1, const char *s2, const char *s3);
+void errorexit(bool exit, const char *s1, const char *s2, const char *s3, const char *s4);
 
 #endif

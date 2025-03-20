@@ -18,6 +18,8 @@
 # include <dirent.h>
 # include "../includes/libft.h"
 
+# define MAX_USHORT 65535
+
 void sort_argv(int min, int max, char **argv);
 char	*get_flags(const char *flag);
 

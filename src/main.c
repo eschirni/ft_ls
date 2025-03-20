@@ -11,22 +11,41 @@
 /* ************************************************************************** */
 
 #include "../includes/ls.h"
+#include <string.h>
 
 void read_dir(const char *path)
 {
 	DIR *dir = opendir(path);
-	struct dirent *entry;
-	while ((entry = readdir(dir)) != NULL)
-		puts (entry->d_name);
+	if (dir != NULL)
+	{
+		struct dirent *entry;
+		while ((entry = readdir(dir)) != NULL)
+			puts (entry->d_name);
+	}
 	closedir(dir);
+}
+
+void probe_args(char **args, unsigned short index) //return array with only valid ones
+{
+	DIR *dir;
+
+	while(args[index] != NULL)
+	{
+		dir = opendir(args[index]);
+		if (dir == NULL && errno != 20) //20 = is not a dir | this will print permission denied too, but it's faster so Imma keep that
+			errorexit(false, "ft_ls: cannot access '", args[index], "': ", strerror(errno));
+		closedir(dir);
+		++index;
+	}
 }
 
 void read_args(char **args, char *flags)
 {
 	unsigned short i = 1;
-	if (flags != NULL)
+	if (flags != NULL) //get flags count and invalid option -x
 		i = 2;
 
+	probe_args(args, i);
 	while(args[i] != NULL)
 	{
 		read_dir(args[i]);
@@ -34,11 +53,11 @@ void read_args(char **args, char *flags)
 	}
 }
 
-int	main(int argc, char **argv) //Directories unable to be openend are printed first and seperately, even with -R
+int	main(int argc, char **argv)
 {
-	if (--argc > 0)
+	if (--argc > 0 && argc <= MAX_USHORT)
 	{
-		char *flags = get_flags(argv[1]);
+		char *flags = get_flags(argv[1]); //fucked up -a -a etc fuuuuck, -- also weird
 		
 		if (flags == NULL)
 			sort_argv(1, argc, argv);
@@ -50,7 +69,9 @@ int	main(int argc, char **argv) //Directories unable to be openend are printed f
 		if (flags != NULL)
 			free(flags);
 	}
-	else
+	else if (argc == 0)
 		read_dir(".");
-	//system("leaks ft_ls");
+	else
+		errorexit(true, "ft_ls: Argument list too long", "", "", "");
+	//system("leaks ft_ls"); //install leaks
 }

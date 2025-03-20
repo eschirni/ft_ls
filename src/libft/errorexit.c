@@ -12,10 +12,13 @@
 
 #include "../../includes/libft.h"
 
-void errorexit(const char *s1, const char *s2, const char *s3)
+void errorexit(bool do_exit, const char *s1, const char *s2, const char *s3, const char *s4)
 {
 	write(2, s1, ft_strlen(s1));
 	write(2, s2, ft_strlen(s2));
 	write(2, s3, ft_strlen(s3));
-	exit(1);
+	write(2, s4, ft_strlen(s4));
+	write(2, "\n", 1);
+	if (do_exit == true)
+		exit(1);
 }

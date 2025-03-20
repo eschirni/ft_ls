@@ -26,7 +26,7 @@ char *ft_straddcharonce(char *s1, const char c)
 
 			s1 = malloc((ft_strlen(tmp) + 2) * sizeof(char));
 			if (s1 == NULL)
-				errorexit("Malloc error\n", "", "");
+				errorexit(true, "Malloc error\n", "", "", "");
 			while (tmp[i] != '\0')
 			{
 				s1[i] = tmp[i];
@@ -40,7 +40,7 @@ char *ft_straddcharonce(char *s1, const char c)
 		{
 			s1 = malloc(sizeof(char) * 2);
 			if (s1 == NULL)
-				errorexit("Malloc error\n", "", "");
+				errorexit(true, "Malloc error\n", "", "", "");
 			s1[0] = c;
 			s1[1] = '\0';
 		}
