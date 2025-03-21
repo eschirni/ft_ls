@@ -13,7 +13,7 @@
 #include "../includes/ls.h"
 #include <string.h>
 
-void read_dir(const char *path)
+void read_dir(const char *path) //prob needs flags
 {
 	DIR *dir = opendir(path);
 	if (dir != NULL)
@@ -32,24 +32,25 @@ void probe_args(char **args, unsigned short index) //return array with only vali
 	while(args[index] != NULL)
 	{
 		dir = opendir(args[index]);
-		if (dir == NULL && errno != 20) //20 = is not a dir | this will print permission denied too, but it's faster so Imma keep that
+		if (dir == NULL && errno != 20) //20 = is not a dir | will print permission denied too, but it's faster
 			errorexit(false, "ft_ls: cannot access '", args[index], "': ", strerror(errno));
 		closedir(dir);
 		++index;
 	}
 }
 
-void read_args(char **args, char *flags)
+void read_args(char **args, unsigned short flag_count)
 {
-	unsigned short i = 1;
-	if (flags != NULL) //get flags count and invalid option -x
-		i = 2;
-
-	probe_args(args, i);
-	while(args[i] != NULL)
+	if (args[flag_count] == NULL)
+		read_dir("."); //but with flags
+	else
 	{
-		read_dir(args[i]);
-		++i;
+		probe_args(args, flag_count);
+		while(args[flag_count] != NULL)
+		{
+			read_dir(args[flag_count]);
+			++flag_count;
+		}
 	}
 }
 
@@ -57,14 +58,11 @@ int	main(int argc, char **argv)
 {
 	if (--argc > 0 && argc <= MAX_USHORT)
 	{
-		char *flags = get_flags(argv[1]); //fucked up -a -a etc fuuuuck, -- also weird
-		
-		if (flags == NULL)
-			sort_argv(1, argc, argv);
-		else
-			sort_argv(2, argc, argv);
+		char *flags = NULL;
+		unsigned short flag_count = get_flags(argv, &flags);
 
-		read_args(argv, flags);
+		sort_argv(flag_count, argc, argv);
+		read_args(argv, flag_count);
 
 		if (flags != NULL)
 			free(flags);
@@ -73,5 +71,4 @@ int	main(int argc, char **argv)
 		read_dir(".");
 	else
 		errorexit(true, "ft_ls: Argument list too long", "", "", "");
-	//system("leaks ft_ls"); //install leaks
 }

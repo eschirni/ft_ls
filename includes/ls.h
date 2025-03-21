@@ -20,7 +20,7 @@
 
 # define MAX_USHORT 65535
 
-void sort_argv(int min, int max, char **argv);
-char	*get_flags(const char *flag);
+void            sort_argv(unsigned short min, unsigned short max, char **argv);
+unsigned short  get_flags(char **args, char **flags);
 
 #endif

@@ -19,9 +19,9 @@ void swap(char **first, char **second)
 	*second = tmp;
 }
 
-int sort(int min, int max, char **argv)
+int sort(unsigned short min, unsigned short max, char **argv)
 {
-	int i = min;
+	unsigned short i = min;
 
 	while (i < max)
 	{
@@ -36,11 +36,11 @@ int sort(int min, int max, char **argv)
 	return (max);
 }
 
-void sort_argv(int min, int max, char **argv)
+void sort_argv(unsigned short min, unsigned short max, char **argv)
 {
 	if (min < max) //to stop recursion
 	{
-		int pivot = sort(min, max, argv);
+		unsigned short pivot = sort(min, max, argv);
 		sort_argv(min, pivot -1, argv);
 		sort_argv(pivot +1, max, argv);
 	}
