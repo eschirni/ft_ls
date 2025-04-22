@@ -14,10 +14,13 @@
 
 bool ft_strfindchar(const char *s, const char c)
 {
-    for (int i = 0; s[i] != '\0'; ++i)
+    if (s != NULL)
     {
-        if (s[i] == c)
-            return (true);
+        for (int i = 0; s[i] != '\0'; ++i)
+        {
+            if (s[i] == c)
+                return (true);
+        }
     }
     return (false);
 }

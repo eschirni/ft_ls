@@ -16,19 +16,25 @@
 void read_dir(const char *path, const char *flags)
 {
 	DIR *dir = opendir(path);
-	if (dir != NULL) //guess something went wrong, permissions etc. I have to handle errors in here too, bec . for example.
+	if (dir != NULL && errno != 20) //guess something went wrong, permissions etc. I have to handle errors in here too, bec . for example.
 	{
 		struct dirent *entry;
-		if (flags != NULL && ft_strfindchar(flags, 'R') == true)
-		{
-			while ((entry = readdir(dir)) != NULL)
-				read_dir(entry->d_name, flags);
-		}
-		puts(path);
+		t_list *dirs = NULL;
+
+		printf("%s:\n", path);
 		closedir(dir);
 		dir = opendir(path);
 		while ((entry = readdir(dir)) != NULL)
-			puts (entry->d_name);
+		{
+			if (entry->d_type == DT_DIR && entry->d_name[0] != '.') //obviously needs a rework for -a
+				ft_lstadd_back(&dirs, ft_lstnew(entry->d_name));
+			write(1, entry->d_name, ft_strlen(entry->d_name));
+			write(1, " ", 1);
+		}
+		write(1, "\n", 1);
+		if (ft_strfindchar(flags, 'R') == true)
+			ft_lstiter(dirs, read_dir, flags);
+		ft_lstclear(&dirs);
 	}
 	closedir(dir);
 }

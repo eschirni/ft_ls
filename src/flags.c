@@ -34,7 +34,7 @@ unsigned short get_flags(char **args, char **flags)
 
 	while (args[flag_count] != NULL && args[flag_count][0] == '-' && args[flag_count][1] != '\0')
 	{
-		if (check_arg(flags, args[flag_count]) == false) //for --
+		if (check_arg(flags, args[flag_count]) == false) //for -- error messages
 			return (++flag_count);
 		++flag_count;
 	}
