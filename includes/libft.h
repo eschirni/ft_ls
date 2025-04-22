@@ -8,7 +8,7 @@
 
 typedef struct s_list
 {
-	void			*content;
+	char			*content;
 	struct s_list	*next;
 }				t_list;
 
@@ -27,7 +27,7 @@ void	ft_lstclear(t_list **lst);
 void	ft_lstdelone(t_list *lst);
 void	ft_lstiter(t_list *lst, void (*f)(const char *, const char *), const char *flags);
 t_list	*ft_lstlast(t_list *lst);
-t_list	*ft_lstnew(char *content);
+t_list	*ft_lstnew(const char *path, char *item);
 int		ft_lstsize(t_list *lst);
 void	*ft_memchr(const void *s, int c, size_t n);
 int		ft_memcmp(const void *s1, const void *s2, size_t n);

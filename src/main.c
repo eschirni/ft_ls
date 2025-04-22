@@ -27,12 +27,12 @@ void read_dir(const char *path, const char *flags)
 		while ((entry = readdir(dir)) != NULL)
 		{
 			if (entry->d_type == DT_DIR && entry->d_name[0] != '.') //obviously needs a rework for -a
-				ft_lstadd_back(&dirs, ft_lstnew(entry->d_name));
+				ft_lstadd_back(&dirs, ft_lstnew(path, entry->d_name));
 			write(1, entry->d_name, ft_strlen(entry->d_name));
 			write(1, " ", 1);
 		}
 		write(1, "\n", 1);
-		if (ft_strfindchar(flags, 'R') == true)
+		if (ft_strfindchar(flags, 'R') == true && dirs != NULL)
 			ft_lstiter(dirs, read_dir, flags);
 		ft_lstclear(&dirs);
 	}

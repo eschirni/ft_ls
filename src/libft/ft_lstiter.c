@@ -14,8 +14,7 @@
 
 void	ft_lstiter(t_list *lst, void (*f)(const char *, const char *), const char *flags)
 {
-	if (lst == NULL || f == NULL)
-		return ;
+	write(1, "\n", 1);
 	f(lst->content, flags);
 	if (lst->next != NULL)
 		ft_lstiter(lst->next, f, flags);
