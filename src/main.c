@@ -21,19 +21,18 @@ void read_dir(const char *path, const char *flags)
 		struct dirent *entry;
 		t_list *dirs = NULL;
 
-		printf("%s:\n", path);
-		closedir(dir);
-		dir = opendir(path);
 		while ((entry = readdir(dir)) != NULL)
 		{
-			if (entry->d_type == DT_DIR && entry->d_name[0] != '.') //obviously needs a rework for -a
-				ft_lstadd_back(&dirs, ft_lstnew(path, entry->d_name));
-			write(1, entry->d_name, ft_strlen(entry->d_name));
-			write(1, " ", 1);
+			if (entry->d_name[0] != '.') //obviously needs a rework for -a
+				ft_lstadd_back(&dirs, ft_lstnew(entry->d_name, entry->d_type)); //idk why it isn't, but this should be undefined behaviour I think
 		}
+		write(1, path, ft_strlen(path));
+		write(1, ":\n", 2);
+		ft_lstprint(dirs);
 		write(1, "\n", 1);
-		if (ft_strfindchar(flags, 'R') == true && dirs != NULL)
-			ft_lstiter(dirs, read_dir, flags);
+
+		if (dirs != NULL && ft_strfindchar(flags, 'R') == true)
+			ft_lstiter(dirs, read_dir, flags, path);
 		ft_lstclear(&dirs);
 	}
 	closedir(dir);

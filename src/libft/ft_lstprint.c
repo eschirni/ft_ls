@@ -1,24 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ls.h                                               :+:      :+:    :+:   */
+/*   ft_lstprint.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eschirni <eschirni@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/22 19:20:17 by eschirni          #+#    #+#             */
-/*   Updated: 2025/03/09 19:47:28 by eschirni         ###   ########.fr       */
+/*   Created: 2025/04/23 14:11:02 by eschirni          #+#    #+#             */
+/*   Updated: 2025/04/23 14:20:17 by eschirni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LS_H
-# define LS_H
+#include "../../includes/libft.h"
 
-# include <errno.h>
-# include "../includes/libft.h"
+void	ft_lstprint(t_list *lst)
+{
+	if (lst != NULL)
+	{
+		write(1, lst->content, ft_strlen(lst->content));
+		write(1, " ", 1);
 
-# define MAX_USHORT 65535
-
-void            sort_argv(unsigned short min, unsigned short max, char **argv);
-unsigned short  get_flags(char **args, char **flags);
-
-#endif
+		if (lst->next != NULL)
+			ft_lstprint(lst->next);
+	}
+}

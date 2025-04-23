@@ -12,7 +12,7 @@
 
 #include "../../includes/libft.h"
 
-t_list	*ft_lstnew(const char *path, char *item)
+t_list	*ft_lstnew(const char *content, unsigned char type)
 {
 	t_list	*list;
 
@@ -20,20 +20,8 @@ t_list	*ft_lstnew(const char *path, char *item)
 	if (list == NULL)
 		return (NULL);
 
-	list->content = malloc((ft_strlen(path) + ft_strlen(item) + 2) * sizeof(char));
-	for (unsigned short s = 0; path[s] != '\0'; ++s)
-	{
-		list->content[s] = path[s];
-		if (path[s + 1] == '\0')
-		{
-			list->content[++s] = '/';
-			for (unsigned short i = 0; item[i] != '\0'; ++i)
-				list->content[++s] = item[i];
-			list->content[++s] = '\0';
-			break ;
-		}
-	}
-
+	list->content = ft_strdup(content);
+	list->type = type;
 	list->next = NULL;
 	return (list);
 }
