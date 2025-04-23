@@ -33,7 +33,7 @@ void add_path(t_list *lst, const char *path)
 
 void	ft_lstiter(t_list *lst, void (*f)(const char *, const char *), const char *flags, const char *path)
 {
-	if(lst->type == DT_DIR)
+	if(lst->type == DT_DIR && !(lst->content[0] == '.' && (lst->content[1] == '\0' || (lst->content[1] == '.' && lst->content[2] == '\0'))))
 	{
 		write(1, "\n", 1);
 		add_path(lst, path);
