@@ -1,20 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstfind.c                                       :+:      :+:    :+:   */
+/*   ft_lstswap.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eschirni <eschirni@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/23 21:43:48 by eschirni          #+#    #+#             */
-/*   Updated: 2025/04/23 21:50:16 by eschirni         ###   ########.fr       */
+/*   Created: 2025/04/25 00:20:35 by eschirni          #+#    #+#             */
+/*   Updated: 2025/04/25 00:20:39 by eschirni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/libft.h"
 
-t_list  *ft_lstfind(t_list *lst, unsigned int i)
+void ft_lstswap(t_list *first, t_list *second)
 {
-    while(i-- > 0)
-        lst = lst->next;
-    return (lst);
+	char *tmp_content = first->content;
+    unsigned char tmp_type = first->type;
+
+	first->content = second->content;
+	first->type = second->type;
+
+	second->content = tmp_content;
+	second->type = tmp_type;
 }

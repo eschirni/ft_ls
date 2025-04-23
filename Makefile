@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME = "ft_ls" #fix relinking
-FILES = src/main.c src/args.c src/flags.c
+FILES = src/main.c src/sorting.c src/flags.c
 OBJS = $(FILES:.c=.o)
 
 %.o: %.c

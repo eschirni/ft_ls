@@ -46,23 +46,11 @@ void sort_argv(unsigned short min, unsigned short max, char **argv)
 	}
 }
 
-void lst_swap(t_list *first, t_list *second)
-{
-	char *tmp_content = first->content;
-    unsigned char tmp_type = first->type;
-
-	first->content = second->content;
-	first->type = second->type;
-
-	second->content = tmp_content;
-	second->type = tmp_type;
-}
-
 int sort_one_lst(unsigned int min, unsigned int max, t_list *lst)
 {
 	unsigned int i = min;
 	t_list *lst_min = ft_lstfind(lst, min);
-	t_list *lst_max = ft_lstfind(lst, max); //SEGFAULT
+	t_list *lst_max = ft_lstfind(lst, max);
 
 	while (i < max)
 	{
@@ -77,7 +65,7 @@ int sort_one_lst(unsigned int min, unsigned int max, t_list *lst)
 			max--;
 		}
 		if (ft_strcmp(lst_min->content, lst_max->content) > 0)
-			lst_swap(lst_min, lst_max);
+			ft_lstswap(lst_min, lst_max);
 	}
 
 	return (max);
