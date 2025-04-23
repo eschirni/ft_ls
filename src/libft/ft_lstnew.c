@@ -23,5 +23,6 @@ t_list	*ft_lstnew(const char *content, unsigned char type)
 	list->content = ft_strdup(content);
 	list->type = type;
 	list->next = NULL;
+	list->prev = NULL;
 	return (list);
 }

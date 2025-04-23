@@ -20,13 +20,17 @@ void read_dir(const char *path, const char *flags)
 	{
 		struct dirent *entry;
 		t_list *dirs = NULL;
+		unsigned int argc = 0;
 
 		while ((entry = readdir(dir)) != NULL)
 		{
 			if (ft_strfindchar(flags, 'a') == false && entry->d_name[0] == '.')
 				continue ;
-			ft_lstadd_back(&dirs, ft_lstnew(entry->d_name, entry->d_type)); //idk why it isn't, but this should be undefined behaviour I think
+			++argc;
+			ft_lstadd_back(&dirs, ft_lstnew(entry->d_name, entry->d_type));
 		}
+		sort_list(0, --argc, dirs);
+
 		write(1, path, ft_strlen(path));
 		write(1, ":\n", 2);
 		ft_lstprint(dirs);
@@ -76,6 +80,8 @@ int	main(int argc, char **argv)
 		unsigned short flag_count = get_flags(argv, &flags);
 
 		sort_argv(flag_count, argc, argv);
+		for (int i = 0; i < argc; i++)
+			puts(argv[i]);
 		read_args(argv, flags, flag_count);
 
 		if (flags != NULL)
@@ -86,7 +92,13 @@ int	main(int argc, char **argv)
 	else
 		errorexit(true, "ft_ls: Argument list too long", "", "", "");
 }
-
+//SEGFAULT on empty dir
 //-t might be just the standard unsorted output reversed
 //For 1 dir it shouldn't print the dir
 //If one arg throws an error it returns -1
+//Replace all shorts with ints
+//stop relinking Makefile
+
+//BEFORE SUBMIT:
+//- check how the ls at 42 sorts the output
+//- check for leaks

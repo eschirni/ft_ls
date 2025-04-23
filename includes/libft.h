@@ -12,6 +12,7 @@ typedef struct s_list
 	char			*content;
 	unsigned char	type;
 	struct s_list	*next;
+	struct s_list	*prev;
 }				t_list;
 
 int		ft_atoi(const char *str);
@@ -31,6 +32,9 @@ void	ft_lstiter(t_list *lst, void (*f)(const char *, const char *), const char *
 t_list	*ft_lstlast(t_list *lst);
 t_list	*ft_lstnew(const char *content, unsigned char type);
 int		ft_lstsize(t_list *lst);
+t_list  *ft_lstfind(t_list *lst, unsigned int i);
+t_list  *ft_lstnext(t_list *lst);
+t_list  *ft_lstprev(t_list *lst);
 void	ft_lstprint(t_list *lst);
 void	*ft_memchr(const void *s, int c, size_t n);
 int		ft_memcmp(const void *s1, const void *s2, size_t n);
