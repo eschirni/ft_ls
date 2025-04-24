@@ -31,7 +31,7 @@ void	ft_lstdelone(t_list *lst);
 void	ft_lstiter(t_list *lst, void (*f)(const char *, const char *), const char *flags, const char *path);
 t_list	*ft_lstlast(t_list *lst);
 t_list	*ft_lstnew(const char *content, unsigned char type);
-int		ft_lstsize(t_list *lst);
+unsigned int	ft_lstsize(t_list *lst);
 t_list  *ft_lstfind(t_list *lst, unsigned int i);
 t_list  *ft_lstnext(t_list *lst);
 t_list  *ft_lstprev(t_list *lst);

@@ -16,59 +16,73 @@
 void read_dir(const char *path, const char *flags)
 {
 	DIR *dir = opendir(path);
-	if (dir != NULL && errno != 20) //guess something went wrong, permissions etc. I have to handle errors in here too, bec . for example.
+	struct dirent *entry;
+	t_list *dirs = NULL;
+	unsigned int argc = 0;
+
+	while ((entry = readdir(dir)) != NULL)
 	{
-		struct dirent *entry;
-		t_list *dirs = NULL;
-		unsigned int argc = 0;
-
-		while ((entry = readdir(dir)) != NULL)
-		{
-			if (ft_strfindchar(flags, 'a') == false && entry->d_name[0] == '.')
-				continue ;
-			++argc;
-			ft_lstadd_back(&dirs, ft_lstnew(entry->d_name, entry->d_type));
-		}
-		if (argc > 1)
-			sort_list(0, --argc, dirs);
-
-		write(1, path, ft_strlen(path));
-		write(1, ":\n", 2);
-		ft_lstprint(dirs);
-		write(1, "\n", 1);
-
-		if (dirs != NULL && ft_strfindchar(flags, 'R') == true)
-			ft_lstiter(dirs, read_dir, flags, path);
-		ft_lstclear(&dirs);
+		if (ft_strfindchar(flags, 'a') == false && entry->d_name[0] == '.')
+			continue ;
+		++argc;
+		ft_lstadd_back(&dirs, ft_lstnew(entry->d_name, entry->d_type));
 	}
+	if (argc > 1)
+		sort_list(0, --argc, dirs);
+
+	write(1, path, ft_strlen(path));
+	write(1, ":\n", 2);
+	ft_lstprint(dirs);
+	write(1, "\n", 1);
+
+	if (dirs != NULL && ft_strfindchar(flags, 'R') == true)
+		ft_lstiter(dirs, read_dir, flags, path);
+	ft_lstclear(&dirs);
 	closedir(dir);
 }
 
-void probe_args(char **args, unsigned short index) //return array with only valid ones
+t_list *probe_args(char **argv, unsigned short index)
 {
 	DIR *dir;
+	t_list *args = NULL;
 
-	while(args[index] != NULL)
+	while(argv[index] != NULL)
 	{
-		dir = opendir(args[index]);
-		if (dir == NULL && errno != 20) //20 = is not a dir | will print permission denied too, but it's faster
-			errorexit(false, "ft_ls: cannot access '", args[index], "': ", strerror(errno));
+		dir = opendir(argv[index]);
+		if (dir != NULL)
+			ft_lstadd_back(&args, ft_lstnew(argv[index], DT_DIR));
+		else if (errno == 20) //20 = is not a dir
+			ft_lstadd_back(&args, ft_lstnew(argv[index], DT_UNKNOWN)); //UNKNOWN because it might be a link etc, need to check for -l
+		else //will print permission denied too, but it's faster
+			errorexit(false, "ft_ls: cannot access '", argv[index], "': ", strerror(errno));
 		closedir(dir);
 		++index;
 	}
+
+	return (args);
 }
 
-void read_args(char **args, const char *flags, unsigned short flag_count)
+void read_args(t_list *args, const char *flags)
 {
-	if (args[flag_count] == NULL)
+	if (args == NULL) //if only flags
 		read_dir(".", flags);
 	else
 	{
-		probe_args(args, flag_count);
-		while(args[flag_count] != NULL)
+		t_list *tmp = args;
+		while(tmp != NULL)
 		{
-			read_dir(args[flag_count], flags);
-			++flag_count;
+			if (tmp->type == DT_UNKNOWN)
+			{
+				write(1, tmp->content, ft_strlen(tmp->content));
+				write(1, " ", 1);
+			}
+			tmp = tmp->next;
+		}
+		while (args != NULL)
+		{
+			if (args->type == DT_DIR)
+				read_dir(args->content, flags);
+			args = args->next;
 		}
 	}
 }
@@ -78,15 +92,16 @@ int	main(int argc, char **argv)
 	if (--argc > 0 && argc <= MAX_USHORT)
 	{
 		char *flags = NULL;
-		unsigned short flag_count = get_flags(argv, &flags);
+		t_list *args = probe_args(argv, get_flags(argv, &flags));
+		unsigned int args_size = ft_lstsize(args);
 
-		sort_argv(flag_count, argc, argv);
-		for (int i = 0; i < argc; i++)
-			puts(argv[i]);
-		read_args(argv, flags, flag_count);
+		if (args_size > 1)
+			sort_list(0, --args_size, args);
+		read_args(args, flags);
 
 		if (flags != NULL)
 			free(flags);
+		ft_lstclear(&args);
 	}
 	else if (argc == 0)
 		read_dir(".", NULL);
@@ -98,7 +113,6 @@ int	main(int argc, char **argv)
 //If one arg throws an error it returns -1
 //Replace all shorts with ints
 //stop relinking Makefile
-//refactor probe_args. Not only do I not like it, the real ls does probe before sorting them
 
 //BEFORE SUBMIT:
 //- check how the ls at 42 sorts the output

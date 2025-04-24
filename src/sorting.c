@@ -12,40 +12,6 @@
 
 #include "../includes/ls.h"
 
-void swap(char **first, char **second)
-{
-	char *tmp = *first;
-	*first = *second;
-	*second = tmp;
-}
-
-int sort_one(unsigned short min, unsigned short max, char **argv)
-{
-	unsigned short i = min;
-
-	while (i < max)
-	{
-		while (ft_strcmp(argv[i], argv[max]) < 1 && i <= max - 1)
-			i++;
-		while (ft_strcmp(argv[max], argv[i]) > 0 && max >= min + 1)
-			max--;
-		if (ft_strcmp(argv[i], argv[max]) > 0)
-			swap(&argv[i], &argv[max]);
-	}
-
-	return (max);
-}
-
-void sort_argv(unsigned short min, unsigned short max, char **argv)
-{
-	if (min < max) //to stop recursion
-	{
-		unsigned short pivot = sort_one(min, max, argv);
-		sort_argv(min, pivot -1, argv);
-		sort_argv(pivot +1, max, argv);
-	}
-}
-
 int sort_one_lst(unsigned int min, unsigned int max, t_list *lst)
 {
 	unsigned int i = min;
