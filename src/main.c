@@ -112,7 +112,6 @@ int	main(int argc, char **argv)
 //For 1 dir it shouldn't print the dir
 //If one arg throws an error it returns -1
 //Replace all shorts with ints
-//stop relinking Makefile
 
 //BEFORE SUBMIT:
 //- check how the ls at 42 sorts the output

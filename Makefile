@@ -10,14 +10,16 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = "ft_ls" #fix relinking
+NAME = ft_ls
 FILES = src/main.c src/sorting.c src/flags.c
 OBJS = $(FILES:.c=.o)
 
 %.o: %.c
 	gcc -c -Wall -Wextra -Werror $< -o $@
 
-all: $(OBJS)
+all: $(NAME)
+
+$(NAME): $(OBJS)
 	@cd src/libft && make
 	gcc -Wall -Wextra -Werror -Ofast $(OBJS) src/libft/libft.a -o $(NAME)
 	
