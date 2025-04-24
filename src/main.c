@@ -98,6 +98,7 @@ int	main(int argc, char **argv)
 //If one arg throws an error it returns -1
 //Replace all shorts with ints
 //stop relinking Makefile
+//refactor probe_args. Not only do I not like it, the real ls does probe before sorting them
 
 //BEFORE SUBMIT:
 //- check how the ls at 42 sorts the output
