@@ -28,7 +28,7 @@ void read_dir(const char *path, const char *flags)
 		ft_lstadd_back(&dirs, ft_lstnew(entry->d_name, entry->d_type));
 	}
 	if (argc > 1)
-		sort_list(0, --argc, dirs);
+		sort(dirs, flags, path, 0, --argc);
 
 	write(1, path, ft_strlen(path));
 	write(1, ":\n", 2);
@@ -96,7 +96,7 @@ int	main(int argc, char **argv)
 		unsigned int args_size = ft_lstsize(args);
 
 		if (args_size > 1)
-			sort_list(0, --args_size, args);
+			sort(args, flags, "", 0, --args_size);
 		read_args(args, flags);
 
 		if (flags != NULL)
@@ -108,7 +108,6 @@ int	main(int argc, char **argv)
 	else
 		errorexit(true, "ft_ls: Argument list too long", "", "", "");
 }
-//-t might be just the standard unsorted output reversed
 //For 1 dir it shouldn't print the dir
 //If one arg throws an error it returns -1
 //Replace all shorts with ints

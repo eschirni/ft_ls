@@ -37,6 +37,7 @@ t_list  *ft_lstnext(t_list *lst);
 t_list  *ft_lstprev(t_list *lst);
 void	ft_lstprint(t_list *lst);
 void	ft_lstswap(t_list *first, t_list *second);
+char	*get_path(t_list *lst, const char *path);
 void	*ft_memchr(const void *s, int c, size_t n);
 int		ft_memcmp(const void *s1, const void *s2, size_t n);
 void	*ft_memcpy(void *dst, const void *src, size_t n);

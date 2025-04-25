@@ -12,7 +12,7 @@
 
 #include "../../includes/libft.h"
 
-void add_path(t_list *lst, const char *path)
+char *get_path(t_list *lst, const char *path)
 {
 	char *tmp = malloc((ft_strlen(path) + ft_strlen(lst->content) + 2) * sizeof(char));
 	for (unsigned short s = 0; path[s] != '\0'; ++s)
@@ -27,16 +27,19 @@ void add_path(t_list *lst, const char *path)
 			break ;
 		}
 	}
-	free(lst->content);
-	lst->content = tmp;
+
+	return (tmp);
 }
 
 void	ft_lstiter(t_list *lst, void (*f)(const char *, const char *), const char *flags, const char *path)
 {
 	if(lst->type == DT_DIR && !(lst->content[0] == '.' && (lst->content[1] == '\0' || (lst->content[1] == '.' && lst->content[2] == '\0'))))
 	{
+		char *tmp = get_path(lst, path);
+
+		free(lst->content);
+		lst->content = tmp;
 		write(1, "\n", 1);
-		add_path(lst, path);
 		f(lst->content, flags);
 	}
 	if (lst->next != NULL)

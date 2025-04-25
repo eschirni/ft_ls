@@ -19,7 +19,7 @@
 # define MAX_USHORT 65535
 
 void            sort_argv(unsigned short min, unsigned short max, char **argv);
-void            sort_list(unsigned int min, unsigned int max, t_list *lst);
+void sort(t_list *lst, const char *flags, const char *path, unsigned int min, unsigned int max);
 unsigned short  get_flags(char **args, char **flags);
 
 #endif
