@@ -57,16 +57,6 @@ unsigned int sort_one_time_rev(t_list *lst, const char *path, unsigned int min, 
 	return (max);
 }
 
-void sort_time_rev(t_list *lst, const char *path, unsigned int min, unsigned int max)
-{
-	if (min < max) //to stop recursion
-	{
-		unsigned int pivot = sort_one_time_rev(lst, path, min, max);
-		sort_time_rev(lst, path, min, pivot -1);
-		sort_time_rev(lst, path, pivot +1, max);
-	}
-}
-
 unsigned int sort_one_time(t_list *lst, const char *path, unsigned int min, unsigned int max) //could be optimized by storing the time in the list
 {
 	unsigned int i = min;
@@ -100,13 +90,13 @@ unsigned int sort_one_time(t_list *lst, const char *path, unsigned int min, unsi
 	return (max);
 }
 
-void sort_time(t_list *lst, const char *path, unsigned int min, unsigned int max) //no tiebraker sort like real ls (can't expect that cmon)
+void sort_time(t_list *lst, const char *path, unsigned int min, unsigned int max, unsigned int (*sort_one)(t_list *, const char *, unsigned int, unsigned int)) //no tiebraker to sort like real ls (can't expect that cmon)
 {
 	if (min < max) //to stop recursion
 	{
-		unsigned int pivot = sort_one_time(lst, path, min, max);
-		sort_time(lst, path, min, pivot -1);
-		sort_time(lst, path, pivot +1, max);
+		unsigned int pivot = sort_one(lst, path, min, max);
+		sort_time(lst, path, min, pivot -1, sort_one);
+		sort_time(lst, path, pivot +1, max, sort_one);
 	}
 }
 
@@ -135,16 +125,6 @@ unsigned int sort_one_alpha_rev(t_list *lst, unsigned int min, unsigned int max)
 	return (max);
 }
 
-void sort_alpha_rev(t_list *lst, unsigned int min, unsigned int max)
-{
-	if (min < max) //to stop recursion
-	{
-		unsigned int pivot = sort_one_alpha_rev(lst, min, max);
-		sort_alpha_rev(lst, min, pivot -1);
-		sort_alpha_rev(lst, pivot +1, max);
-	}
-}
-
 unsigned int sort_one_alpha(t_list *lst, unsigned int min, unsigned int max)
 {
 	unsigned int i = min;
@@ -170,13 +150,13 @@ unsigned int sort_one_alpha(t_list *lst, unsigned int min, unsigned int max)
 	return (max);
 }
 
-void sort_alpha(t_list *lst, unsigned int min, unsigned int max)
+void sort_alpha(t_list *lst, unsigned int min, unsigned int max, unsigned int (*sort_one)(t_list *, unsigned int, unsigned int))
 {
 	if (min < max) //to stop recursion
 	{
-		unsigned int pivot = sort_one_alpha(lst, min, max);
-		sort_alpha(lst, min, pivot -1);
-		sort_alpha(lst, pivot +1, max);
+		unsigned int pivot = sort_one(lst, min, max);
+		sort_alpha(lst, min, pivot -1, sort_one);
+		sort_alpha(lst, pivot +1, max, sort_one);
 	}
 }
 
@@ -185,15 +165,15 @@ void sort(t_list *lst, const char *flags, const char *path, unsigned int min, un
 	if (ft_strfindchar(flags, 't') == true)
 	{
 		if (ft_strfindchar(flags, 'r') == true)
-			sort_time_rev(lst, path, min, max);
+			sort_time(lst, path, min, max, sort_one_time_rev);
 		else
-			sort_time(lst, path, min, max);
+			sort_time(lst, path, min, max, sort_one_time);
 	}
 	else
 	{
 		if (ft_strfindchar(flags, 'r') == true)
-			sort_alpha_rev(lst, min, max);
+			sort_alpha(lst, min, max, sort_one_alpha_rev);
 		else
-			sort_alpha(lst, min, max);
+			sort_alpha(lst, min, max, sort_one_alpha);
 	}
 }
