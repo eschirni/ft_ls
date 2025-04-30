@@ -7,6 +7,8 @@
 # include <stdbool.h>
 # include <dirent.h>
 # include <sys/stat.h>
+# include <pwd.h>
+# include <grp.h>
 
 typedef struct s_list
 {

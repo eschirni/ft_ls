@@ -12,13 +12,22 @@
 
 #include "../../includes/libft.h"
 
-void print_content(t_list *lst)
+void print_long(t_list *lst)
 {
-	if (lst != NULL)
+	while (lst != NULL)
 	{
+		char *s = ft_itoa(lst->stats.st_nlink);
+		write(1, s, ft_strlen(s));
+		write(1, "	", 1);
+		s = getpwuid(lst->stats.st_uid)->pw_name;
+		write(1, s, ft_strlen(s));
+		write(1, "	", 1);
+		s = getgrgid(lst->stats.st_gid)->gr_name;
+		write(1, s, ft_strlen(s));
+		write(1, "	", 1);
 		write(1, lst->content, ft_strlen(lst->content));
-		write(1, " ", 1);
-		print_content(lst->next);
+		write(1, "\n", 1);
+		lst = lst->next;
 	}
 }
 
@@ -36,6 +45,16 @@ void print_blocks(t_list *lst)
 	write(1, "\n", 1);
 }
 
+void print_content(t_list *lst)
+{
+	if (lst != NULL)
+	{
+		write(1, lst->content, ft_strlen(lst->content));
+		write(1, " ", 1);
+		print_content(lst->next);
+	}
+}
+
 void	ft_lstprint(t_list *lst, const char *flags) //check in lstnew if flags are -l or -m and if so call lstat and save the result
 {
 	if (ft_strfindchar(flags, 'l') == false)
@@ -43,6 +62,6 @@ void	ft_lstprint(t_list *lst, const char *flags) //check in lstnew if flags are 
 	else
 	{
 		print_blocks(lst);
-		print_content(lst);
+		print_long(lst);
 	}
 }
