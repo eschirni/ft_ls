@@ -11,6 +11,32 @@
 /* ************************************************************************** */
 
 #include "../../includes/libft.h"
+#include <pwd.h>
+#include <grp.h>
+#include <time.h>
+
+void write_string_part(char *s, unsigned int start, unsigned int end)
+{
+	while (s[start] != '\0' && start <= end)
+	{
+		write(1, &s[start], 1);
+		++start;
+	}
+}
+
+void print_time(t_list *lst)
+{
+	char *time = ctime(&lst->stats.st_mtime);
+
+	write_string_part(time, 4, 6); //month
+	write(1, "	", 1);
+	write_string_part(time, 8, 9); //day
+	write(1, "	", 1);
+	write_string_part(time, 11, 15); //time
+	write(1, "	", 1);
+	write_string_part(time, 20, 23); //year
+	write(1, "	", 1);
+}
 
 void print_long(t_list *lst)
 {
@@ -25,6 +51,10 @@ void print_long(t_list *lst)
 		s = getgrgid(lst->stats.st_gid)->gr_name;
 		write(1, s, ft_strlen(s));
 		write(1, "	", 1);
+		s = ft_itoa(lst->stats.st_size);
+		write(1, s, ft_strlen(s));
+		write(1, "	", 1);
+		print_time(lst);
 		write(1, lst->content, ft_strlen(lst->content));
 		write(1, "\n", 1);
 		lst = lst->next;

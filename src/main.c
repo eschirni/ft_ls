@@ -62,7 +62,7 @@ t_list *probe_args(char **argv, const char *flags, unsigned short index)
 	return (args);
 }
 
-void read_args(t_list *args, const char *flags)
+void read_args(t_list *args, const char *flags) //reads . if the other dir is inaccesible
 {
 	if (args == NULL) //if only flags
 		read_dir(".", flags);
@@ -113,8 +113,8 @@ int	main(int argc, char **argv)
 //Makefile says nothing to be done when changing an printf file
 //For 1 dir it shouldn't print the dir
 //If one arg throws an error it returns more than 0
-//Replace all shorts with ints
 // Test -l and -t with links
+// Test non accesible dir and if -l crashes etc
 //obviously check for forbidden fucntions like printf or puts I often used for testing
 
 //BEFORE SUBMIT:
