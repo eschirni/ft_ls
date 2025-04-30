@@ -11,92 +11,80 @@
 /* ************************************************************************** */
 
 #include "../includes/ls.h"
-#include <sys/stat.h>
 
-time_t get_time(t_list *lst, const char *path)
-{
-	struct stat stats;
-	char *tmp = get_path(lst, path);
-
-	lstat(tmp, &stats);
-	free(tmp);
-
-	return (stats.st_mtime);
-}
-
-unsigned int sort_one_time_rev(t_list *lst, const char *path, unsigned int min, unsigned int max)
+unsigned int sort_one_time_rev(t_list *lst, unsigned int min, unsigned int max)
 {
 	unsigned int i = min;
 	t_list *lst_min = ft_lstfind(lst, min);
 	t_list *lst_max = ft_lstfind(lst, max);
-	time_t min_time = get_time(lst_min, path);
-	time_t max_time = get_time(lst_max, path);
+	time_t min_time = lst_min->stats.st_mtime;
+	time_t max_time = lst_max->stats.st_mtime;
 
 	while (i < max)
 	{
 		while (min_time <= max_time && i <= max - 1)
 		{
 			lst_min = ft_lstnext(lst_min);
-			min_time = get_time(lst_min, path);
+			min_time = lst_min->stats.st_mtime;
 			i++;
 		}
 		while (max_time > min_time && max >= min + 1)
 		{
 			lst_max = ft_lstprev(lst_max);
-			max_time = get_time(lst_max, path);
+			max_time = lst_max->stats.st_mtime;
 			max--;
 		}
 		if (min_time > max_time)
 		{
 			ft_lstswap(lst_min, lst_max);
-			min_time = get_time(lst_min, path);
-			max_time = get_time(lst_max, path);
+			min_time = lst_min->stats.st_mtime;
+			max_time = lst_max->stats.st_mtime;
 		}
 	}
 
 	return (max);
 }
 
-unsigned int sort_one_time(t_list *lst, const char *path, unsigned int min, unsigned int max) //could be optimized by storing the time in the list
+unsigned int sort_one_time(t_list *lst, unsigned int min, unsigned int max) //could be optimized by storing the time in the list
 {
 	unsigned int i = min;
 	t_list *lst_min = ft_lstfind(lst, min);
 	t_list *lst_max = ft_lstfind(lst, max);
-	time_t min_time = get_time(lst_min, path);
-	time_t max_time = get_time(lst_max, path);
+	time_t min_time = lst_min->stats.st_mtime;
+	time_t max_time = lst_max->stats.st_mtime;
 
 	while (i < max)
 	{
 		while (min_time >= max_time && i <= max - 1)
 		{
 			lst_min = ft_lstnext(lst_min);
-			min_time = get_time(lst_min, path);
+			min_time = lst_min->stats.st_mtime;
 			i++;
 		}
 		while (max_time < min_time && max >= min + 1)
 		{
 			lst_max = ft_lstprev(lst_max);
-			max_time = get_time(lst_max, path);
+			max_time = lst_max->stats.st_mtime;
 			max--;
 		}
 		if (min_time < max_time)
 		{
 			ft_lstswap(lst_min, lst_max);
-			min_time = get_time(lst_min, path);
-			max_time = get_time(lst_max, path);
+			min_time = lst_min->stats.st_mtime;
+			max_time = lst_max->stats.st_mtime;
 		}
 	}
 
 	return (max);
 }
 
-void sort_time(t_list *lst, const char *path, unsigned int min, unsigned int max, unsigned int (*sort_one)(t_list *, const char *, unsigned int, unsigned int)) //no tiebraker to sort like real ls (can't expect that cmon)
+void sort_time(t_list *lst, unsigned int min, unsigned int max, unsigned int (*sort_one)(t_list *, unsigned int, unsigned int)) //no tiebraker to sort like real ls (can't expect that cmon)
 {
 	if (min < max) //to stop recursion
 	{
-		unsigned int pivot = sort_one(lst, path, min, max);
-		sort_time(lst, path, min, pivot -1, sort_one);
-		sort_time(lst, path, pivot +1, max, sort_one);
+		unsigned int pivot = sort_one(lst, min, max);
+		sort_time(lst, min, pivot -1, sort_one);
+		sort_time(lst, pivot +1, max, sort_one);
 	}
 }
 
@@ -160,14 +148,14 @@ void sort_alpha(t_list *lst, unsigned int min, unsigned int max, unsigned int (*
 	}
 }
 
-void sort(t_list *lst, const char *flags, const char *path, unsigned int min, unsigned int max)
+void sort(t_list *lst, const char *flags, unsigned int min, unsigned int max)
 {
 	if (ft_strfindchar(flags, 't') == true)
 	{
 		if (ft_strfindchar(flags, 'r') == true)
-			sort_time(lst, path, min, max, sort_one_time_rev);
+			sort_time(lst, min, max, sort_one_time_rev);
 		else
-			sort_time(lst, path, min, max, sort_one_time);
+			sort_time(lst, min, max, sort_one_time);
 	}
 	else
 	{

@@ -25,14 +25,14 @@ void read_dir(const char *path, const char *flags)
 		if (ft_strfindchar(flags, 'a') == false && entry->d_name[0] == '.')
 			continue ;
 		++argc;
-		ft_lstadd_back(&dirs, ft_lstnew(entry->d_name, entry->d_type));
+		ft_lstadd_back(&dirs, ft_lstnew(entry->d_name, entry->d_type, path, flags));
 	}
 	if (argc > 1)
-		sort(dirs, flags, path, 0, --argc);
+		sort(dirs, flags, 0, --argc);
 
 	write(1, path, ft_strlen(path));
 	write(1, ":\n", 2);
-	ft_lstprint(dirs);
+	ft_lstprint(dirs, flags);
 	write(1, "\n", 1);
 
 	if (dirs != NULL && ft_strfindchar(flags, 'R') == true)
@@ -41,7 +41,7 @@ void read_dir(const char *path, const char *flags)
 	closedir(dir);
 }
 
-t_list *probe_args(char **argv, unsigned short index)
+t_list *probe_args(char **argv, const char *flags, unsigned short index)
 {
 	DIR *dir;
 	t_list *args = NULL;
@@ -50,9 +50,9 @@ t_list *probe_args(char **argv, unsigned short index)
 	{
 		dir = opendir(argv[index]);
 		if (dir != NULL)
-			ft_lstadd_back(&args, ft_lstnew(argv[index], DT_DIR));
+			ft_lstadd_back(&args, ft_lstnew(argv[index], DT_DIR, "./", flags));
 		else if (errno == 20) //20 = is not a dir
-			ft_lstadd_back(&args, ft_lstnew(argv[index], DT_UNKNOWN)); //UNKNOWN because it might be a link etc, need to check for -l
+			ft_lstadd_back(&args, ft_lstnew(argv[index], DT_UNKNOWN, "./", flags)); //UNKNOWN because it might be a link etc, need to check for -l
 		else //will print permission denied too, but it's faster
 			errorexit(false, "ft_ls: cannot access '", argv[index], "': ", strerror(errno));
 		closedir(dir);
@@ -78,6 +78,7 @@ void read_args(t_list *args, const char *flags)
 			}
 			tmp = tmp->next;
 		}
+		write(1, "\n", 1);
 		while (args != NULL)
 		{
 			if (args->type == DT_DIR)
@@ -92,11 +93,12 @@ int	main(int argc, char **argv)
 	if (--argc > 0 && argc <= MAX_USHORT)
 	{
 		char *flags = NULL;
-		t_list *args = probe_args(argv, get_flags(argv, &flags));
+		unsigned short flag_count = get_flags(argv, &flags);
+		t_list *args = probe_args(argv, flags, flag_count);
 		unsigned int args_size = ft_lstsize(args);
 
 		if (args_size > 1)
-			sort(args, flags, "", 0, --args_size);
+			sort(args, "", 0, --args_size);
 		read_args(args, flags);
 
 		if (flags != NULL)
@@ -108,9 +110,12 @@ int	main(int argc, char **argv)
 	else
 		errorexit(true, "ft_ls: Argument list too long", "", "", "");
 }
+//Makefile says nothing to be done when changing an printf file
 //For 1 dir it shouldn't print the dir
-//If one arg throws an error it returns -1
+//If one arg throws an error it returns more than 0
 //Replace all shorts with ints
+// Test -l and -t with links
+//obviously check for forbidden fucntions like printf or puts I often used for testing
 
 //BEFORE SUBMIT:
 //- check how the ls at 42 sorts the output

@@ -6,11 +6,14 @@
 # include <stdlib.h>
 # include <stdbool.h>
 # include <dirent.h>
+# include <sys/stat.h>
 
 typedef struct s_list
 {
 	char			*content;
 	unsigned char	type;
+	char			*path;
+	struct stat		stats;
 	struct s_list	*next;
 	struct s_list	*prev;
 }				t_list;
@@ -30,12 +33,12 @@ void	ft_lstclear(t_list **lst);
 void	ft_lstdelone(t_list *lst);
 void	ft_lstiter(t_list *lst, void (*f)(const char *, const char *), const char *flags, const char *path);
 t_list	*ft_lstlast(t_list *lst);
-t_list	*ft_lstnew(const char *content, unsigned char type);
+t_list	*ft_lstnew(const char *content, unsigned char type, const char *path, const char *flags);
 unsigned int	ft_lstsize(t_list *lst);
 t_list  *ft_lstfind(t_list *lst, unsigned int i);
 t_list  *ft_lstnext(t_list *lst);
 t_list  *ft_lstprev(t_list *lst);
-void	ft_lstprint(t_list *lst);
+void	ft_lstprint(t_list *lst, const char *flags);
 void	ft_lstswap(t_list *first, t_list *second);
 char	*get_path(t_list *lst, const char *path);
 void	*ft_memchr(const void *s, int c, size_t n);

@@ -15,5 +15,6 @@
 void	ft_lstdelone(t_list *lst)
 {
 	free(lst->content);
+	free(lst->path);
 	free(lst);
 }

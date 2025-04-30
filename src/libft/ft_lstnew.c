@@ -12,7 +12,7 @@
 
 #include "../../includes/libft.h"
 
-t_list	*ft_lstnew(const char *content, unsigned char type)
+t_list	*ft_lstnew(const char *content, unsigned char type, const char *path, const char *flags)
 {
 	t_list	*list;
 
@@ -22,7 +22,10 @@ t_list	*ft_lstnew(const char *content, unsigned char type)
 
 	list->content = ft_strdup(content);
 	list->type = type;
+	list->path = get_path(list, path);
 	list->next = NULL;
 	list->prev = NULL;
+	if (ft_strfindchar(flags, 'l') == true || ft_strfindchar(flags, 't') == true)
+		lstat(list->path, &list->stats);
 	return (list);
 }
