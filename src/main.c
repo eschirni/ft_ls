@@ -111,9 +111,8 @@ int	main(int argc, char **argv)
 		errorexit(true, "ft_ls: Argument list too long", "", "", "");
 }
 //Makefile says nothing to be done when changing an libft file
-//For 1 dir it shouldn't print the dir
+//For 1 dir it shouldn't print the dir - if ls -l Makefile, print -l options
 //If one arg throws an error it returns more than 0
-// Test -l and -t with links
 // ls | cat -e
 // Test non accesible dir and if -l crashes etc
 //obviously check for forbidden fucntions like printf or puts I often used for testing

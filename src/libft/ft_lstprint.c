@@ -15,6 +15,22 @@
 #include <grp.h>
 #include <time.h>
 
+void print_link(t_list *lst)
+{
+	write(1, lst->content, ft_strlen(lst->content));
+	if (S_ISLNK(lst->stats.st_mode))
+	{
+		char link[PATH_MAX + 1];
+		ssize_t i = readlink(lst->path, link, PATH_MAX);
+		if (i > 0)
+		{
+			link[i] = '\0';
+			write(1, " -> ", 4);
+			write(1, link, ft_strlen(link));
+		}
+	}
+}
+
 void write_string_part(char *s, unsigned int start, unsigned int end)
 {
 	while (s[start] != '\0' && start <= end)
@@ -53,6 +69,7 @@ void print_long(t_list *lst)
 		char *s = ft_itoa(lst->stats.st_nlink);
 		write(1, s, ft_strlen(s));
 		write(1, "	", 1);
+		free(s);
 		s = getpwuid(lst->stats.st_uid)->pw_name;
 		write(1, s, ft_strlen(s));
 		write(1, "	", 1);
@@ -62,8 +79,9 @@ void print_long(t_list *lst)
 		s = ft_itoa(lst->stats.st_size);
 		write(1, s, ft_strlen(s));
 		write(1, "	", 1);
+		free(s);
 		print_time(lst);
-		write(1, lst->content, ft_strlen(lst->content));
+		print_link(lst);
 		write(1, "\n", 1);
 		lst = lst->next;
 	}
@@ -83,20 +101,20 @@ void print_blocks(t_list *lst)
 	write(1, "\n", 1);
 }
 
-void print_content(t_list *lst)
+void print_all(t_list *lst)
 {
 	if (lst != NULL)
 	{
 		write(1, lst->content, ft_strlen(lst->content));
 		write(1, " ", 1);
-		print_content(lst->next);
+		print_all(lst->next);
 	}
 }
 
 void	ft_lstprint(t_list *lst, const char *flags) //check in lstnew if flags are -l or -m and if so call lstat and save the result
 {
 	if (ft_strfindchar(flags, 'l') == false)
-		print_content(lst);
+		print_all(lst);
 	else
 	{
 		print_blocks(lst);
