@@ -26,16 +26,24 @@ void write_string_part(char *s, unsigned int start, unsigned int end)
 
 void print_time(t_list *lst)
 {
-	char *time = ctime(&lst->stats.st_mtime);
+	char *s_now = ctime(&lst->stats.st_mtime);
+	time_t now = time(NULL);
+	time_t diff = now - lst->stats.st_mtime;
 
-	write_string_part(time, 4, 6); //month
+	write_string_part(s_now, 4, 6); //month
 	write(1, "	", 1);
-	write_string_part(time, 8, 9); //day
+	write_string_part(s_now, 8, 9); //day
 	write(1, "	", 1);
-	write_string_part(time, 11, 15); //time
-	write(1, "	", 1);
-	write_string_part(time, 20, 23); //year
-	write(1, "	", 1);
+	if (diff <= 15811200 && diff >= 0) //15811200 = 183 days in seconds
+	{
+		write_string_part(s_now, 11, 15); //time
+		write(1, "	", 1);
+	}
+	else
+	{
+		write_string_part(s_now, 20, 23); //year
+		write(1, "	", 1);
+	}
 }
 
 void print_long(t_list *lst)
