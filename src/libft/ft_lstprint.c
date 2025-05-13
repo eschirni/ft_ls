@@ -62,10 +62,40 @@ void print_time(t_list *lst)
 	}
 }
 
+void print_perm(t_list *lst)
+{
+	if (S_ISDIR(lst->stats.st_mode)) //dir
+		write(1, "d", 1);
+    else if (S_ISLNK(lst->stats.st_mode)) //link
+		write(1, "l", 1);
+    else if (S_ISCHR(lst->stats.st_mode)) //char special file
+		write(1, "c", 1);
+    else if (S_ISBLK(lst->stats.st_mode)) //block special file
+		write(1, "b", 1);
+    else if (S_ISFIFO(lst->stats.st_mode)) //FIFO (Named pipe)
+		write(1, "p", 1);
+    else if (S_ISSOCK(lst->stats.st_mode)) //socket
+		write(1, "s", 1);
+    else
+		write(1, "-", 1);
+
+	write(1, (lst->stats.st_mode & S_IRUSR) ? "r" : "-", 1);
+	write(1, (lst->stats.st_mode & S_IWUSR) ? "w" : "-", 1);
+	write(1, (lst->stats.st_mode & S_IXUSR) ? "x" : "-", 1);
+	write(1, (lst->stats.st_mode & S_IRGRP) ? "r" : "-", 1);
+	write(1, (lst->stats.st_mode & S_IWGRP) ? "w" : "-", 1);
+	write(1, (lst->stats.st_mode & S_IXGRP) ? "x" : "-", 1);
+	write(1, (lst->stats.st_mode & S_IROTH) ? "r" : "-", 1);
+	write(1, (lst->stats.st_mode & S_IWOTH) ? "w" : "-", 1);
+	write(1, (lst->stats.st_mode & S_IXOTH) ? "x" : "-", 1);
+	write(1, "	", 1);
+}
+
 void print_long(t_list *lst)
 {
 	while (lst != NULL)
 	{
+		print_perm(lst);
 		char *s = ft_itoa(lst->stats.st_nlink);
 		write(1, s, ft_strlen(s));
 		write(1, "	", 1);

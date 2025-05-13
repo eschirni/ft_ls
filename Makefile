@@ -11,24 +11,27 @@
 # **************************************************************************** #
 
 NAME = ft_ls
-FILES = src/main.c src/sorting.c src/flags.c
+FILES = src/*.c
 OBJS = $(FILES:.c=.o)
+LIBFT_OBJS = src/libft/*.o
 
 %.o: %.c
 	gcc -c -Wall -Wextra -Werror $< -o $@
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
-	@cd src/libft && make
+src/libft/libft.a: $(LIBFT_OBJS)
+	@make -C src/libft
+
+$(NAME): $(OBJS) src/libft/libft.a
 	gcc -Wall -Wextra -Werror -Ofast $(OBJS) src/libft/libft.a -o $(NAME)
 	
 clean:
 	@rm -f $(OBJS)
-	@cd src/libft && make clean
+	@make -C src/libft clean
 
 fclean: clean
 	@rm -f $(NAME)
-	@cd src/libft && make fclean
+	@make -C src/libft fclean
 
 re: fclean all
