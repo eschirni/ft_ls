@@ -141,7 +141,26 @@ void print_all(t_list *lst)
 	}
 }
 
-void	ft_lstprint(t_list *lst, const char *flags) //check in lstnew if flags are -l or -m and if so call lstat and save the result
+void	ft_print_unknown(t_list *lst, const char *flags)
+{
+	t_list *tmp = NULL;
+
+	while (lst != NULL)
+	{
+		if (lst->type == DT_UNKNOWN)
+			ft_lstadd_back(&tmp, ft_lstnew(lst->content, lst->type, lst->path, flags));
+		lst = lst->next;
+	}
+
+	if (ft_strfindchar(flags, 'l') == false)
+		print_all(tmp);
+	else
+		print_long(tmp);
+
+	ft_lstclear(&tmp);
+}
+
+void	ft_lstprint(t_list *lst, const char *flags)
 {
 	if (ft_strfindchar(flags, 'l') == false)
 		print_all(lst);

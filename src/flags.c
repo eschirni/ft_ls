@@ -21,7 +21,7 @@ bool check_arg(char **flags, const char *flag)
 			if (flag[i] == 'a' || flag[i] == 'l' || flag[i] == 'r' || flag[i] == 'R' || flag[i] == 't')
 				*flags = ft_straddcharonce(*flags, flag[i]);
 			else
-				errorexit(true, "ft_ls: illegal option -- ", &flag[i], "\n", "usage: ft_ls [-Ralrt] [file ...]"); //because fprintf would be too easy
+				errorexit(true, 2, "ft_ls: illegal option -- ", &flag[i], "\n", "usage: ft_ls [-Ralrt] [file ...]"); //because fprintf would be too easy
 		}
 		return (true);
 	}

@@ -38,6 +38,7 @@ unsigned int	ft_lstsize(t_list *lst);
 t_list  *ft_lstfind(t_list *lst, unsigned int i);
 t_list  *ft_lstnext(t_list *lst);
 t_list  *ft_lstprev(t_list *lst);
+void	ft_print_unknown(t_list *lst, const char *flags);
 void	ft_lstprint(t_list *lst, const char *flags);
 void	ft_lstswap(t_list *first, t_list *second);
 char	*get_path(t_list *lst, const char *path);
@@ -67,7 +68,7 @@ char	*ft_substr(const char *s, unsigned int start, size_t len);
 int		ft_tolower(int c);
 int		ft_toupper(int c);
 char	*ft_straddcharonce(char *s1, const char c);
-void	errorexit(bool exit, const char *s1, const char *s2, const char *s3, const char *s4);
+void	errorexit(bool do_exit, int i, const char *s1, const char *s2, const char *s3, const char *s4);
 bool	ft_strfindchar(const char *s, const char c);
 
 #endif

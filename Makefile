@@ -11,16 +11,15 @@
 # **************************************************************************** #
 
 NAME = ft_ls
-FILES = src/*.c
+FILES = src/main.c src/sorting.c src/flags.c
 OBJS = $(FILES:.c=.o)
-LIBFT_OBJS = src/libft/*.o
 
 %.o: %.c
 	gcc -c -Wall -Wextra -Werror $< -o $@
 
 all: $(NAME)
 
-src/libft/libft.a: $(LIBFT_OBJS)
+src/libft/libft.a:
 	@make -C src/libft
 
 $(NAME): $(OBJS) src/libft/libft.a

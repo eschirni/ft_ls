@@ -16,29 +16,47 @@
 void read_dir(const char *path, const char *flags)
 {
 	DIR *dir = opendir(path);
-	struct dirent *entry;
-	t_list *dirs = NULL;
-	unsigned int argc = 0;
 
-	while ((entry = readdir(dir)) != NULL)
+	if (dir != NULL)
 	{
-		if (ft_strfindchar(flags, 'a') == false && entry->d_name[0] == '.')
-			continue ;
-		++argc;
-		ft_lstadd_back(&dirs, ft_lstnew(entry->d_name, entry->d_type, path, flags));
+		struct dirent *entry;
+		t_list *dirs = NULL;
+		unsigned int argc = 0;
+
+		while ((entry = readdir(dir)) != NULL)
+		{
+			if (ft_strfindchar(flags, 'a') == false && entry->d_name[0] == '.')
+				continue ;
+			++argc;
+			ft_lstadd_back(&dirs, ft_lstnew(entry->d_name, entry->d_type, path, flags));
+		}
+		if (argc > 1)
+			sort(dirs, flags, 0, --argc);
+
+		write(1, path, ft_strlen(path));
+		write(1, ":\n", 2);
+		ft_lstprint(dirs, flags);
+		write(1, "\n", 1);
+
+		if (dirs != NULL && ft_strfindchar(flags, 'R') == true)
+			ft_lstiter(dirs, read_dir, flags, path);
+		ft_lstclear(&dirs);
+		closedir(dir);
 	}
-	if (argc > 1)
-		sort(dirs, flags, 0, --argc);
+	else
+		errorexit(false, 1, "ft_ls: cannot access '", path, "': ", strerror(errno));
+}
 
-	write(1, path, ft_strlen(path));
-	write(1, ":\n", 2);
-	ft_lstprint(dirs, flags);
-	write(1, "\n", 1);
+void read_args(t_list *args, const char *flags) //reads . if the other dir is inaccesible
+{
+	ft_print_unknown(args, flags);
 
-	if (dirs != NULL && ft_strfindchar(flags, 'R') == true)
-		ft_lstiter(dirs, read_dir, flags, path);
-	ft_lstclear(&dirs);
-	closedir(dir);
+	while (args != NULL)
+	{
+		if (args->type == DT_DIR)
+			read_dir(args->content, flags);
+		args = args->next;
+	}
 }
 
 t_list *probe_args(char **argv, const char *flags, unsigned short index)
@@ -46,46 +64,22 @@ t_list *probe_args(char **argv, const char *flags, unsigned short index)
 	DIR *dir;
 	t_list *args = NULL;
 
+	if (argv[index] == NULL) //only flags
+		read_dir(".", flags);
 	while(argv[index] != NULL)
 	{
 		dir = opendir(argv[index]);
 		if (dir != NULL)
 			ft_lstadd_back(&args, ft_lstnew(argv[index], DT_DIR, "./", flags));
 		else if (errno == 20) //20 = is not a dir
-			ft_lstadd_back(&args, ft_lstnew(argv[index], DT_UNKNOWN, "./", flags)); //UNKNOWN because it might be a link etc, need to check for -l
-		else //will print permission denied too, but it's faster
-			errorexit(false, "ft_ls: cannot access '", argv[index], "': ", strerror(errno));
+			ft_lstadd_back(&args, ft_lstnew(argv[index], DT_UNKNOWN, "./", flags)); //UNKNOWN because it might be a link etc
+		else
+			errorexit(false, 2, "ft_ls: cannot access '", argv[index], "': ", strerror(errno));
 		closedir(dir);
 		++index;
 	}
 
 	return (args);
-}
-
-void read_args(t_list *args, const char *flags) //reads . if the other dir is inaccesible
-{
-	if (args == NULL) //if only flags
-		read_dir(".", flags);
-	else
-	{
-		t_list *tmp = args;
-		while(tmp != NULL)
-		{
-			if (tmp->type == DT_UNKNOWN)
-			{
-				write(1, tmp->content, ft_strlen(tmp->content));
-				write(1, " ", 1);
-			}
-			tmp = tmp->next;
-		}
-		write(1, "\n", 1);
-		while (args != NULL)
-		{
-			if (args->type == DT_DIR)
-				read_dir(args->content, flags);
-			args = args->next;
-		}
-	}
 }
 
 int	main(int argc, char **argv)
@@ -108,13 +102,13 @@ int	main(int argc, char **argv)
 	else if (argc == 0)
 		read_dir(".", NULL);
 	else
-		errorexit(true, "ft_ls: Argument list too long", "", "", "");
-}
-//For 1 dir it shouldn't print the dir - if ls -l Makefile, print -l options
-//If one arg throws an error it returns more than 0
-// ls | cat -e
-// Test non accesible dir and if -l crashes etc
-//obviously check for forbidden fucntions like printf or puts I often used for testing
+		errorexit(true, 2, "ft_ls: Argument list too long", "", "", "");
 
+	errorexit(true, 0, "", "", "", "");
+}
+// Do pipes stuff
+// right ls -l padding
+// ls -a src -a, etc should work
 //BEFORE SUBMIT:
-//- check for leaks
+//obviously check for forbidden fucntions like printf or puts I often used for testing
+//check for leaks
