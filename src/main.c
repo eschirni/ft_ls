@@ -36,7 +36,7 @@ void read_dir(const char *path, const char *flags)
 		write(1, path, ft_strlen(path));
 		write(1, ":\n", 2);
 		ft_lstprint(dirs, flags);
-		write(1, "\n", 1);
+		write(1, "\n\n", 2);
 
 		if (dirs != NULL && ft_strfindchar(flags, 'R') == true)
 			ft_lstiter(dirs, read_dir, flags, path);
@@ -70,9 +70,9 @@ t_list *probe_args(char **argv, const char *flags, unsigned short flags_count)
 		{
 			dir = opendir(argv[index]);
 			if (dir != NULL)
-				ft_lstadd_back(&args, ft_lstnew(argv[index], DT_DIR, "./", flags));
+				ft_lstadd_back(&args, ft_lstnew(argv[index], DT_DIR, "", flags));
 			else if (errno == 20) //20 = is not a dir
-				ft_lstadd_back(&args, ft_lstnew(argv[index], DT_UNKNOWN, "./", flags)); //UNKNOWN because it might be a link etc
+				ft_lstadd_back(&args, ft_lstnew(argv[index], DT_UNKNOWN, "", flags)); //UNKNOWN because it might be a link etc
 			else
 				errorexit(false, 2, "ft_ls: cannot access '", argv[index], "': ", strerror(errno));
 			closedir(dir);
@@ -109,8 +109,7 @@ int	main(int argc, char **argv)
 	errorexit(true, 0, "", "", "", "");
 }
 //BUGS:
-// ls -l on passed files is wrong
-// ./ft_ls -ar Makefile ft_ls -tl returned 1?
+// -t returns 1?
 
 //TODO:
 // right ls -l padding

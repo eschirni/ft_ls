@@ -14,6 +14,9 @@
 
 char *get_path(t_list *lst, const char *path)
 {
+	if (path[0] == '\0')
+		return (ft_strdup(lst->content));
+
 	char *tmp = malloc((ft_strlen(path) + ft_strlen(lst->content) + 2) * sizeof(char));
 	for (unsigned short s = 0; path[s] != '\0'; ++s)
 	{
@@ -39,7 +42,6 @@ void	ft_lstiter(t_list *lst, void (*f)(const char *, const char *), const char *
 
 		free(lst->content);
 		lst->content = tmp;
-		write(1, "\n", 1);
 		f(lst->content, flags);
 	}
 	if (lst->next != NULL)

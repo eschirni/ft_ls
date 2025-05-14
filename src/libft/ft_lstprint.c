@@ -136,7 +136,7 @@ void print_all(t_list *lst)
 	if (lst != NULL)
 	{
 		write(1, lst->content, ft_strlen(lst->content));
-		write(1, " ", 1);
+		write(1, "  ", 2);
 		print_all(lst->next);
 	}
 }
@@ -148,7 +148,7 @@ void	ft_print_unknown(t_list *lst, const char *flags)
 	while (lst != NULL)
 	{
 		if (lst->type == DT_UNKNOWN)
-			ft_lstadd_back(&tmp, ft_lstnew(lst->content, lst->type, lst->path, flags));
+			ft_lstadd_back(&tmp, ft_lstnew(lst->content, lst->type, "", flags));
 		lst = lst->next;
 	}
 

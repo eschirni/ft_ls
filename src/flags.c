@@ -14,7 +14,7 @@
 
 bool check_arg(char **flags, char *flag)
 {
-	if (flag[1] != '-' || flag[2] == '-')
+	if (flag[1] != '-' || flag[2] != '\0')
 	{
 		for (unsigned short i = 1; flag[i] != '\0'; ++i)
 		{
