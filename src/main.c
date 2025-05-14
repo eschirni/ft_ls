@@ -64,9 +64,9 @@ t_list *probe_args(char **argv, const char *flags, unsigned short flags_count)
 	DIR *dir;
 	t_list *args = NULL;
 
-	for(unsigned short index = flags_count; argv[index] != NULL; ++index)
+	for(unsigned short index = 1; argv[index] != NULL; ++index)
 	{
-		if (flags_count != 1 || argv[index][0] != '-')
+		if (argv[index][0] != '-' || (flags_count != 1 && index >= flags_count))
 		{
 			dir = opendir(argv[index]);
 			if (dir != NULL)
@@ -109,7 +109,6 @@ int	main(int argc, char **argv)
 	errorexit(true, 0, "", "", "", "");
 }
 //BUGS:
-// -- flags stuff
 // ls -l on passed files is wrong
 // ./ft_ls -ar Makefile ft_ls -tl returned 1?
 
