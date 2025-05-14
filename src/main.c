@@ -47,7 +47,7 @@ void read_dir(const char *path, const char *flags)
 		errorexit(false, 1, "ft_ls: cannot access '", path, "': ", strerror(errno));
 }
 
-void read_args(t_list *args, const char *flags) //reads . if the other dir is inaccesible
+void read_args(t_list *args, const char *flags)
 {
 	ft_print_unknown(args, flags);
 
@@ -59,25 +59,27 @@ void read_args(t_list *args, const char *flags) //reads . if the other dir is in
 	}
 }
 
-t_list *probe_args(char **argv, const char *flags, unsigned short index)
+t_list *probe_args(char **argv, const char *flags, unsigned short flags_count)
 {
 	DIR *dir;
 	t_list *args = NULL;
 
-	if (argv[index] == NULL) //only flags
-		read_dir(".", flags);
-	while(argv[index] != NULL)
+	for(unsigned short index = flags_count; argv[index] != NULL; ++index)
 	{
-		dir = opendir(argv[index]);
-		if (dir != NULL)
-			ft_lstadd_back(&args, ft_lstnew(argv[index], DT_DIR, "./", flags));
-		else if (errno == 20) //20 = is not a dir
-			ft_lstadd_back(&args, ft_lstnew(argv[index], DT_UNKNOWN, "./", flags)); //UNKNOWN because it might be a link etc
-		else
-			errorexit(false, 2, "ft_ls: cannot access '", argv[index], "': ", strerror(errno));
-		closedir(dir);
-		++index;
+		if (flags_count != 1 || argv[index][0] != '-')
+		{
+			dir = opendir(argv[index]);
+			if (dir != NULL)
+				ft_lstadd_back(&args, ft_lstnew(argv[index], DT_DIR, "./", flags));
+			else if (errno == 20) //20 = is not a dir
+				ft_lstadd_back(&args, ft_lstnew(argv[index], DT_UNKNOWN, "./", flags)); //UNKNOWN because it might be a link etc
+			else
+				errorexit(false, 2, "ft_ls: cannot access '", argv[index], "': ", strerror(errno));
+			closedir(dir);
+		}
 	}
+	if (args == NULL) //only flags
+		read_dir(".", flags);
 
 	return (args);
 }
@@ -92,7 +94,7 @@ int	main(int argc, char **argv)
 		unsigned int args_size = ft_lstsize(args);
 
 		if (args_size > 1)
-			sort(args, "", 0, --args_size);
+			sort(args, flags, 0, --args_size);
 		read_args(args, flags);
 
 		if (flags != NULL)
@@ -106,9 +108,14 @@ int	main(int argc, char **argv)
 
 	errorexit(true, 0, "", "", "", "");
 }
-// Do pipes stuff
+//BUGS:
+// -- flags stuff
+// ls -l on passed files is wrong
+// ./ft_ls -ar Makefile ft_ls -tl returned 1?
+
+//TODO:
 // right ls -l padding
-// ls -a src -a, etc should work
+
 //BEFORE SUBMIT:
 //obviously check for forbidden fucntions like printf or puts I often used for testing
 //check for leaks

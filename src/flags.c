@@ -12,7 +12,7 @@
 
 #include "../includes/ls.h"
 
-bool check_arg(char **flags, const char *flag)
+bool check_arg(char **flags, char *flag)
 {
 	if (flag[1] != '-' || flag[2] == '-')
 	{
@@ -21,7 +21,10 @@ bool check_arg(char **flags, const char *flag)
 			if (flag[i] == 'a' || flag[i] == 'l' || flag[i] == 'r' || flag[i] == 'R' || flag[i] == 't')
 				*flags = ft_straddcharonce(*flags, flag[i]);
 			else
-				errorexit(true, 2, "ft_ls: illegal option -- ", &flag[i], "\n", "usage: ft_ls [-Ralrt] [file ...]"); //because fprintf would be too easy
+			{
+				flag[i + 1] = '\0';
+				errorexit(true, 2, "ft_ls: illegal option -- '", &flag[i], "'\n", "usage: ft_ls [-Ralrt] [file ...]"); //because fprintf would be too easy
+			}
 		}
 		return (true);
 	}
@@ -30,14 +33,14 @@ bool check_arg(char **flags, const char *flag)
 
 unsigned short get_flags(char **args, char **flags)
 {
-	unsigned short flag_count = 1;
-
-	while (args[flag_count] != NULL && args[flag_count][0] == '-' && args[flag_count][1] != '\0')
+	for(unsigned short i = 1; args[i] != NULL; ++i)
 	{
-		if (check_arg(flags, args[flag_count]) == false) //for -- error messages
-			return (++flag_count);
-		++flag_count;
+		if (args[i][0] == '-' && args[i][1] != '\0')
+		{
+			if (check_arg(flags, args[i]) == false) //for -- error messages
+				return (++i);
+		}
 	}
 
-	return (flag_count);
+	return (1);
 }
