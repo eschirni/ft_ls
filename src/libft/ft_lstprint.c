@@ -148,10 +148,11 @@ void print_blocks(t_list *lst)
 		blocks += lst->stats.st_blocks;
 		lst = lst->next;
 	}
-	char *print_blocks = ft_itoa(blocks / 2);
+	char *print_blocks = ft_itoa(blocks);
 	write(1, "total ", 6);
 	write(1, print_blocks, ft_strlen(print_blocks));
 	write(1, "\n", 1);
+	free(print_blocks);
 }
 
 void print_all(t_list *lst)

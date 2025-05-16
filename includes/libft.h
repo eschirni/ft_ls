@@ -7,6 +7,7 @@
 # include <stdbool.h>
 # include <dirent.h>
 # include <sys/stat.h>
+# define PATH_MAX 4096
 
 typedef struct s_list
 {

@@ -6,7 +6,7 @@
 /*   By: eschirni <eschirni@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 19:05:43 by eschirni          #+#    #+#             */
-/*   Updated: 2025/03/09 19:22:12 by eschirni         ###   ########.fr       */
+/*   Updated: 2025/05/16 23:34:42 by eschirni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,5 @@ void errorexit(bool do_exit, int i, const char *s1, const char *s2, const char *
 	write(2, "\n", 1);
 
 	if (do_exit == true)
-		exit(ret);
+		exit(ret);	
 }

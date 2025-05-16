@@ -6,7 +6,7 @@
 /*   By: eschirni <eschirni@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/23 20:31:29 by eschirni          #+#    #+#             */
-/*   Updated: 2025/03/09 19:57:32 by eschirni         ###   ########.fr       */
+/*   Updated: 2025/05/16 23:33:11 by eschirni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,8 @@ t_list *probe_args(char **argv, const char *flags, unsigned short flags_count)
 				ft_lstadd_back(&args, ft_lstnew(argv[index], DT_UNKNOWN, "", flags)); //UNKNOWN because it might be a link etc
 			else
 				errorexit(false, 2, "ft_ls: cannot access '", argv[index], "': ", strerror(errno));
-			closedir(dir);
+			if (dir != NULL)
+				closedir(dir);
 		}
 	}
 	if (errno == 0 && args == NULL) //only flags
