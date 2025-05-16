@@ -47,15 +47,51 @@ void read_dir(const char *path, const char *flags)
 		errorexit(false, 1, "ft_ls: cannot access '", path, "': ", strerror(errno));
 }
 
+void read_one_dir(const char *path, const char *flags)
+{
+	DIR *dir = opendir(path);
+
+	if (dir != NULL) //Because . could be permission denied as well
+	{
+		struct dirent *entry;
+		t_list *dirs = NULL;
+		unsigned int argc = 0;
+
+		while ((entry = readdir(dir)) != NULL)
+		{
+			if (ft_strfindchar(flags, 'a') == false && entry->d_name[0] == '.')
+				continue ;
+			++argc;
+			ft_lstadd_back(&dirs, ft_lstnew(entry->d_name, entry->d_type, path, flags));
+		}
+		if (argc > 1)
+			sort(dirs, flags, 0, --argc);
+
+		ft_lstprint(dirs, flags);
+
+		if (dirs != NULL && ft_strfindchar(flags, 'R') == true)
+			ft_lstiter(dirs, read_dir, flags, path);
+		ft_lstclear(&dirs);
+		closedir(dir);
+	}
+	else
+		errorexit(false, 1, "ft_ls: cannot access '", path, "': ", strerror(errno));
+}
+
 void read_args(t_list *args, const char *flags)
 {
-	ft_print_unknown(args, flags);
-
-	while (args != NULL)
+	if (ft_lstsize(args) == 1)
+		read_one_dir(args->content, flags);
+	else
 	{
-		if (args->type == DT_DIR)
-			read_dir(args->content, flags);
-		args = args->next;
+		ft_print_unknown(args, flags);
+
+		while (args != NULL)
+		{
+			if (args->type == DT_DIR)
+				read_dir(args->content, flags);
+			args = args->next;
+		}
 	}
 }
 
@@ -78,8 +114,8 @@ t_list *probe_args(char **argv, const char *flags, unsigned short flags_count)
 			closedir(dir);
 		}
 	}
-	if (args == NULL) //only flags
-		read_dir(".", flags);
+	if (errno == 0 && args == NULL) //only flags
+		read_one_dir(".", flags);
 
 	return (args);
 }
@@ -102,18 +138,17 @@ int	main(int argc, char **argv)
 		ft_lstclear(&args);
 	}
 	else if (argc == 0)
-		read_dir(".", NULL);
+		read_one_dir(".", NULL);
 	else
 		errorexit(true, 2, "ft_ls: Argument list too long", "", "", "");
 
 	errorexit(true, 0, "", "", "", "");
 }
 //BUGS:
-// -t returns 1?
+// -t returns 1? - probably -t overflow
 
 //TODO:
 // right ls -l padding
 
 //BEFORE SUBMIT:
-//obviously check for forbidden fucntions like printf or puts I often used for testing
 //check for leaks
