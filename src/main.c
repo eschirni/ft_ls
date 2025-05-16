@@ -68,6 +68,7 @@ void read_one_dir(const char *path, const char *flags)
 			sort(dirs, flags, 0, --argc);
 
 		ft_lstprint(dirs, flags);
+		write(1, "\n", 1);
 
 		if (dirs != NULL && ft_strfindchar(flags, 'R') == true)
 			ft_lstiter(dirs, read_dir, flags, path);
@@ -146,9 +147,6 @@ int	main(int argc, char **argv)
 }
 //BUGS:
 // -t returns 1? - probably -t overflow
-
-//TODO:
-// right ls -l padding
 
 //BEFORE SUBMIT:
 //check for leaks

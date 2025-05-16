@@ -16,5 +16,9 @@ void	ft_lstdelone(t_list *lst)
 {
 	free(lst->content);
 	free(lst->path);
+	free(lst->s_nlink);
+	free(lst->s_name);
+	free(lst->s_group);
+	free(lst->s_size);
 	free(lst);
 }

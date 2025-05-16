@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../includes/libft.h"
+#include <pwd.h>
+#include <grp.h>
 
 t_list	*ft_lstnew(const char *content, unsigned char type, const char *path, const char *flags)
 {
@@ -26,6 +28,16 @@ t_list	*ft_lstnew(const char *content, unsigned char type, const char *path, con
 	list->next = NULL;
 	list->prev = NULL;
 	if (ft_strfindchar(flags, 'l') == true || ft_strfindchar(flags, 't') == true)
+	{
 		lstat(list->path, &list->stats);
+		list->s_nlink = ft_itoa(list->stats.st_nlink);
+		list->l_nlink = ft_strlen(list->s_nlink);
+		list->s_name = ft_strdup(getpwuid(list->stats.st_uid)->pw_name);
+		list->l_name = ft_strlen(list->s_name);
+		list->s_group = ft_strdup(getgrgid(list->stats.st_gid)->gr_name);
+		list->l_group = ft_strlen(list->s_group);
+		list->s_size = ft_itoa(list->stats.st_size);
+		list->l_size = ft_strlen(list->s_size);
+	}
 	return (list);
 }

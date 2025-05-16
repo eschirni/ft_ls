@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "../../includes/libft.h"
-#include <pwd.h>
-#include <grp.h>
 #include <time.h>
 
 void print_link(t_list *lst)
@@ -47,19 +45,15 @@ void print_time(t_list *lst)
 	time_t diff = now - lst->stats.st_mtime;
 
 	write_string_part(s_now, 4, 6); //month
-	write(1, "	", 1);
+	write(1, " ", 1);
 	write_string_part(s_now, 8, 9); //day
-	write(1, "	", 1);
+	write(1, " ", 1);
+
 	if (diff <= 15811200 && diff >= 0) //15811200 = 183 days in seconds
-	{
 		write_string_part(s_now, 11, 15); //time
-		write(1, "	", 1);
-	}
 	else
-	{
-		write_string_part(s_now, 20, 23); //year
-		write(1, "	", 1);
-	}
+		write_string_part(s_now, 19, 23); //year
+	write(1, " ", 1);
 }
 
 void print_perm(t_list *lst)
@@ -88,28 +82,57 @@ void print_perm(t_list *lst)
 	write(1, (lst->stats.st_mode & S_IROTH) ? "r" : "-", 1);
 	write(1, (lst->stats.st_mode & S_IWOTH) ? "w" : "-", 1);
 	write(1, (lst->stats.st_mode & S_IXOTH) ? "x" : "-", 1);
-	write(1, "	", 1);
+	write(1, " ", 1);
+}
+
+unsigned int	*get_sizes(t_list *lst)
+{
+	static unsigned int max[4];
+
+	while (lst != NULL)
+	{
+		if (lst->l_nlink > max[0])
+			max[0] = lst->l_nlink;
+		if (lst->l_name > max[1])
+			max[1] = lst->l_name;
+		if (lst->l_group > max[2])
+			max[2] = lst->l_group;
+		if (lst->l_size > max[3])
+			max[3] = lst->l_size;
+		lst = lst->next;
+	}
+
+	return (max);
 }
 
 void print_long(t_list *lst)
 {
+	unsigned int *max = get_sizes(lst);
+
 	while (lst != NULL)
 	{
-		print_perm(lst);
-		char *s = ft_itoa(lst->stats.st_nlink);
-		write(1, s, ft_strlen(s));
-		write(1, "	", 1);
-		free(s);
-		s = getpwuid(lst->stats.st_uid)->pw_name;
-		write(1, s, ft_strlen(s));
-		write(1, "	", 1);
-		s = getgrgid(lst->stats.st_gid)->gr_name;
-		write(1, s, ft_strlen(s));
-		write(1, "	", 1);
-		s = ft_itoa(lst->stats.st_size);
-		write(1, s, ft_strlen(s));
-		write(1, "	", 1);
-		free(s);
+		print_perm(lst); //permissions
+
+		for (unsigned char i = max[0] - lst->l_nlink; i > 0; --i) //link count
+			write(1, " ", 1);
+		write(1, lst->s_nlink, lst->l_nlink);
+		write(1, " ", 1);
+
+		write(1, lst->s_name, lst->l_name);
+		for (unsigned char i = max[1] - lst->l_name; i > 0; --i) //owner
+			write(1, " ", 1);
+		write(1, " ", 1);
+
+		write(1, lst->s_group, lst->l_group);
+		for (unsigned char i = max[2] - lst->l_group; i > 0; --i) //group
+			write(1, " ", 1);
+		write(1, " ", 1);
+
+		for (unsigned char i = max[3] - lst->l_size; i > 0; --i) //group
+			write(1, " ", 1);
+		write(1, lst->s_size, lst->l_size);
+		write(1, " ", 1);
+
 		print_time(lst);
 		print_link(lst);
 		write(1, "\n", 1);

@@ -14,6 +14,14 @@ typedef struct s_list
 	unsigned char	type;
 	char			*path;
 	struct stat		stats;
+	char			*s_nlink;
+	unsigned int	l_nlink;
+	char			*s_name;
+	unsigned int	l_name;
+	char			*s_group;
+	unsigned int	l_group;
+	char			*s_size;
+	unsigned int	l_size;
 	struct s_list	*next;
 	struct s_list	*prev;
 }				t_list;
