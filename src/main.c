@@ -6,7 +6,7 @@
 /*   By: eschirni <eschirni@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/23 20:31:29 by eschirni          #+#    #+#             */
-/*   Updated: 2025/05/16 23:33:11 by eschirni         ###   ########.fr       */
+/*   Updated: 2025/05/19 15:44:09 by eschirni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,12 @@ void read_one_dir(const char *path, const char *flags)
 
 void read_args(t_list *args, const char *flags)
 {
-	if (ft_lstsize(args) == 1)
+	ft_print_unknown(args, flags);
+
+	if (ft_lstsize(args) == 1 && args->type == DT_DIR)
 		read_one_dir(args->content, flags);
 	else
 	{
-		ft_print_unknown(args, flags);
-
 		while (args != NULL)
 		{
 			if (args->type == DT_DIR)
@@ -109,7 +109,7 @@ t_list *probe_args(char **argv, const char *flags, unsigned short flags_count)
 			if (dir != NULL)
 				ft_lstadd_back(&args, ft_lstnew(argv[index], DT_DIR, "", flags));
 			else if (errno == 20) //20 = is not a dir
-				ft_lstadd_back(&args, ft_lstnew(argv[index], DT_UNKNOWN, "", flags)); //UNKNOWN because it might be a link etc
+				ft_lstadd_back(&args, ft_lstnew(argv[index], DT_UNKNOWN, "", flags)); //UNKNOWN because it might be a link etc	
 			else
 				errorexit(false, 2, "ft_ls: cannot access '", argv[index], "': ", strerror(errno));
 			if (dir != NULL)
