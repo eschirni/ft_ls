@@ -6,7 +6,7 @@
 /*   By: eschirni <eschirni@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/15 21:09:04 by eschirni          #+#    #+#             */
-/*   Updated: 2025/02/22 19:54:28 by eschirni         ###   ########.fr       */
+/*   Updated: 2025/05/19 17:01:32 by eschirni         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,10 @@ t_list	*ft_lstnew(const char *content, unsigned char type, const char *path, con
 	list->path = get_path(list, path);
 	list->next = NULL;
 	list->prev = NULL;
+	list->s_nlink = NULL;
+	list->s_name = NULL;
+	list->s_group = NULL;
+	list->s_size = NULL;
 	if (ft_strfindchar(flags, 'l') == true || ft_strfindchar(flags, 't') == true)
 	{
 		lstat(list->path, &list->stats);
